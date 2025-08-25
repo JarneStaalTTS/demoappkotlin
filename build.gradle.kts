@@ -71,8 +71,8 @@ jooq {
                         excludes = "flyway_schema_history|sqlite_sequence"
                     }
                     target.apply {
-                        packageName = "com.tts.demo.generated"
-                        directory = "build/generated-src/jooq/main"
+                        packageName = "com.tts.demo.db.jooq.generated"
+                        directory = "${project.projectDir}/src/main/kotlin/"
                     }
                 }
             }
@@ -106,6 +106,15 @@ tasks.withType<KotlinCompile> {
 // Task to run JOOQ code generation after Flyway migration
 tasks.named("generateJooq") {
     dependsOn("flywayMigrate")
+}
+
+// Clean up tasks
+tasks.register("jooq-cleanup", Delete::class) {
+    doLast {
+        mkdir("${project.buildDir}")
+    }
+    delete("${project.projectDir}/src/main/kotlin/com/tts/demo/db/jooq/generated")
+    delete("${project.projectDir}/demoapp.sqlite")
 }
 
 // Remember to run:
